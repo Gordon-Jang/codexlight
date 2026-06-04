@@ -11,12 +11,10 @@ if errorlevel 1 (
     exit /b 1
 )
 
-echo [CodexLight] Starting the top status light monitor...
-echo [CodexLight] Close the light window to stop the monitor.
-echo.
-
-python -m codexlight.cli %*
-
-echo.
-echo [CodexLight] CodexLight exited.
-pause
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+  "$root = (Resolve-Path '.').Path; " ^
+  "$python = (Get-Command python).Source; " ^
+  "$process = Start-Process -FilePath $python -ArgumentList @('-m','codexlight.cli') -WorkingDirectory $root -WindowStyle Hidden -PassThru; " ^
+  "$process.Id | Set-Content -Encoding ASCII -Path (Join-Path $root 'codexlight.pid'); " ^
+  "Write-Host ('[CodexLight] Started monitor process ' + $process.Id); " ^
+  "Write-Host '[CodexLight] Use stop-codexlight.bat to stop the monitor.'"

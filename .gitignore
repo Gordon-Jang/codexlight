@@ -16,3 +16,4 @@ dist/
 .coverage
 htmlcov/
 *.log
+codexlight.pid
